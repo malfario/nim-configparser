@@ -81,27 +81,27 @@ type
     ParserState = enum
         readSection, readKV
 
-
-proc parseIni*(s: string): Ini = 
-    var ini = newIni()
+proc parseIni*(s: string): Ini =
     var state: ParserState = readSection
-    let lines = s.splitLines
-    
-    var currentSectionName: string = ""
-    var currentSection = newSection()
-    
+    var currentSection: Section
+    var ini = newIni()
+    let lines = s.splitLines()
+
     for rawLine in lines:
         let line = rawLine.strip()
+
         if line.strip() == "" or line.startsWith(";") or line.startsWith("#"):
-            continue
+            continue  # comment
+
         if line.startsWith("["):
             if line.endsWith("]"):
                 state = readSection
             else:
-                raise newException(ValueError, fmt("Excpected line {line} to start with [ and end with ]"))
+                raise newException(ValueError, fmt("Malformed section: {line}"))
 
         if state == readSection:
-            currentSectionName = line[1..<line.len-1]
+            let currentSectionName = line[1..<line.len-1]
+            currentSection = newSection()
             ini.setSection(currentSectionName, currentSection)
             state = readKV
             continue
@@ -111,16 +111,11 @@ proc parseIni*(s: string): Ini =
             if len(parts) == 2:
                 let key = parts[0].strip()
                 let val = parts[1].strip()
-                ini.setProperty(currentSectionName, key, val)
+                currentSection.setProperty(key, val)
             elif len(parts) > 2:
                 let key = parts[0].strip()
                 let val = line.replace(key & " =", "").strip()
-                ini.setProperty(currentSectionName, key, val)
+                currentSection.setProperty(key, val)
             else:
-                raise newException(ValueError, fmt("Expected line {line} to have key = value"))
+                raise newException(ValueError, fmt("Malformed property: {line}"))
     return ini
-        
-            
-        
-
-        
