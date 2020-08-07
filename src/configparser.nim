@@ -69,13 +69,13 @@ proc deleteProperty*(this: Ini, sectionName: string, key: string) =
     else:
         raise newException(ValueError, "Ini doesn't have section " & sectionName)
 
-proc toIniString*(this: Ini): string =
+proc toIniString*(this: Ini, newline: string = "\p"): string =
     var output: seq[string]
     for name, section in this.sections:
         output.add(fmt"[{name}]")
         for key, val in section.properties:
             output.add(fmt"{key}={val}")
-    return output.join("\p")
+    return output.join(newline)
 
 type
     ParserState = enum
