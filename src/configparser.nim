@@ -23,12 +23,12 @@ proc `$`*(this: Section): string =
 type Ini* = ref object
     sections: Table[string, Section]
 
-proc newIni*(): Ini = 
+proc newIni*(): Ini =
     var ini = Ini()
     ini.sections = initTable[string, Section]()
     return ini
 
-proc `$`*(this: Ini): string = 
+proc `$`*(this: Ini): string =
     return "<Ini " & $this.sections & " >"
 
 proc setSection*(this: Ini, name: string, section: Section) =
@@ -43,7 +43,7 @@ proc hasSection*(this: Ini, name: string): bool =
 proc deleteSection*(this: Ini, name:string) =
     this.sections.del(name)
 
-proc sectionsCount*(this: Ini) : int = 
+proc sectionsCount*(this: Ini) : int =
     echo $this.sections
     return len(this.sections)
 
