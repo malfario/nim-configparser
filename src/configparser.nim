@@ -75,7 +75,7 @@ proc toIniString*(this: Ini, newline: string = "\p"): string =
         output.add(fmt"[{name}]")
         for key, val in section.properties:
             output.add(fmt"{key}={val}")
-        output.add(newline)
+    output.add(newline)
     return output.join(newline)
 
 type
