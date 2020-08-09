@@ -75,8 +75,7 @@ proc toIniString*(this: Ini, newline: string = "\p"): string =
         output.add(fmt"[{name}]")
         for key, val in section.properties:
             output.add(fmt"{key}={val}")
-    output.add(newline)
-    return output.join(newline)
+    return output.join(newline) & newline
 
 type
     ParserState = enum
